@@ -1,0 +1,2 @@
+﻿  stdafx.cpp
+e:\congty\onedrive\make_game\giveitup\giveitup-tai\giveitup.v00\giveitup.v00\define.h(7): fatal error C1083: Cannot open include file: 'SFML/Graphics.hpp': No such file or directory

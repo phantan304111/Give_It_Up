@@ -1,0 +1,219 @@
+#include "stdafx.h"
+#include "Scene_Over.h"
+
+OverScene::OverScene()
+{
+}
+
+
+OverScene::~OverScene()
+{
+}
+void OverScene::Init() {
+	//
+	t = 0;
+	is_start = true;
+	ShowCoin();
+	//
+	if (!m_SoundBufferEffect.loadFromFile(SoundButton) || !m_fontScene.loadFromFile(Fonttext))
+	{
+		std::cout << "ERROR" << std::endl;
+	}
+	else {
+
+		m_SoundEffect.setBuffer(m_SoundBufferEffect);
+	
+		//if (Flag_Sound)
+		//	m_SoundEffect.setVolume(100);
+		//else
+		//	m_SoundEffect.setVolume(0);
+		
+		m_textScene.setFont(m_fontScene);
+		m_textScene.setString("GIVE IT UP!!!");
+		m_textScene.setFillColor(sf::Color::Black);
+		m_textScene.setCharacterSize(50);
+		m_textScene.setPosition(WINDOWS_W / 9 * 2, WINDOWS_H / 5);
+	}
+	if (!m_music_Scene.openFromFile(MusicGameOver))
+	{
+		cout << "error" << endl;
+	}
+	else
+	{
+		m_music_Scene.openFromFile(MusicGameOver);
+
+		/*if (Flag_Music)
+			m_music_Scene.setVolume(70);
+		else
+			m_music_Scene.setVolume(0);*/
+		m_music_Scene.play();
+		m_music_Scene.setLoop(true);
+
+	}
+
+
+	if (!m_textureBackground.loadFromFile(TEXTURE_BACKGROUNDGAMEOver))
+	{
+		cout << "error" << endl;
+	}
+	else {
+		//
+		m_textureBackground.loadFromFile(TEXTURE_BACKGROUNDGAMEOver);
+		m_Texture_buttonReplay.loadFromFile(TEXTURE_BACKGROUNDBTNReplay);
+		m_Texture_buttonBuy.loadFromFile(TEXTURE_BACKGROUNDBTNBuy);
+		m_Texture_buttonMenu.loadFromFile(TEXTURE_BACKGROUNDBTNMenu);
+		//
+		m_vecTextureSize = m_textureBackground.getSize();
+		m_vecWindowSize = sf::Vector2u(WINDOWS_W, WINDOWS_H);
+		float ScaleX = (float)m_vecWindowSize.x / m_vecTextureSize.x;
+		float ScaleY = (float)m_vecWindowSize.y / m_vecTextureSize.y;
+		m_spriteBackground.setTexture(m_textureBackground);
+
+
+
+
+		m_spritebuttonMenu.setPosition(float(WINDOWS_W /9 *8 ), float(WINDOWS_H/6 ));
+		m_spritebuttonReplay.setPosition(float(WINDOWS_W / 9 * 8 - 15), float(WINDOWS_H / 6 * 3 -15));
+		m_spritebuttonBuy.setPosition(float(WINDOWS_W / 9 * 8 ), float(WINDOWS_H / 6 * 5 ));
+
+
+		m_spritebuttonReplay.setTexture(m_Texture_buttonReplay);
+		m_spritebuttonBuy.setTexture(m_Texture_buttonBuy);
+		m_spritebuttonMenu.setTexture(m_Texture_buttonMenu);
+		//
+		m_spritebuttonReplay.scale(sf::Vector2f(float(0.001), float(0.001)));
+		m_spritebuttonMenu.scale(sf::Vector2f(float(0.001), float(0.001)));
+		m_spritebuttonBuy.scale(sf::Vector2f(float(0.001), float(0.001)));
+		//
+
+		m_spriteBackground.setScale(ScaleX, ScaleY);
+	}
+	if (Flag_Sound)
+		m_SoundEffect.setVolume(100);
+	else
+		m_SoundEffect.setVolume(0);
+	if (Flag_Music)
+		m_music_Scene.setVolume(70);
+	else
+		m_music_Scene.setVolume(0);
+}
+
+
+void OverScene::Render(RenderWindow &window) {
+	//Background
+
+	window.draw(m_spriteBackground);
+	window.draw(m_textScene);
+	window.draw(m_spritebuttonReplay);
+	window.draw(m_spritebuttonMenu);
+	window.draw(m_spritebuttonBuy);
+	window.draw(m_spriteCoin);
+	window.draw(m_textcoin);
+	m_mousePos = sf::Mouse::getPosition(window);
+}
+
+
+
+void OverScene::Update(float dt, E & e) {
+	if (e == MOUSE_LEFT) {
+		
+		Mousedown();
+
+	}
+	if (e == MOUSE_LEFT_RELEASE) {
+
+		Mouseup();
+
+	}
+	//if (e == MouseMoved)
+	//{
+	//	sf::Vector2f mousePosF(static_cast<float>(m_mousePos.x), static_cast<float>(m_mousePos.y));
+	//	if (m_spritebuttonReplay.getGlobalBounds().contains(mousePosF))//neu nut hinh co chua chuot
+	//	{
+	//		m_spritebuttonReplay.setColor(sf::Color::Green);
+	//	}
+	//	else if (m_spritebuttonMenu.getGlobalBounds().contains(mousePosF))
+	//	{
+	//		m_spritebuttonMenu.setColor(sf::Color::Green);
+	//	}
+	//	else if (m_spritebuttonBuy.getGlobalBounds().contains(mousePosF))
+	//	{
+	//		m_spritebuttonBuy.setColor(sf::Color::Green);
+	//	}
+		/*for (size_t i = 0; i < m_vPlate.size(); i++)
+		{
+		if (m_vPlate[i].m_spritePlate.getGlobalBounds().contains(mousePosF));
+		cout << i;
+		}*/
+		//m_vPlate[i].m_spritePlate.setColor(sf::Color(255, 255, 255));
+
+		//else
+		//{
+		//	m_spritebuttonReplay.setColor(sf::Color(255, 255, 255));
+		//	m_spritebuttonMenu.setColor(sf::Color(255, 255, 255));
+		//	m_spritebuttonBuy.setColor(sf::Color(255, 255, 255));
+		//}
+	//}
+	if (is_start) {
+		if (m_spritebuttonReplay.getScale().x < 1)
+		{
+			ScalespriteIn(m_spritebuttonMenu);
+			ScalespriteIn(m_spritebuttonReplay);
+			ScalespriteIn(m_spritebuttonBuy);
+		}
+		else
+		{
+			is_start = false;
+		}
+	}
+		if (is_end) {
+			is_start = false;
+			t += dt;
+			ScalespriteOut(m_spritebuttonMenu);
+			ScalespriteOut(m_spritebuttonReplay);
+			ScalespriteOut(m_spritebuttonBuy);
+			if (t > 2)
+			{
+				m_music_Scene.stop();
+				m_IsSwitch = true;
+			}
+		}
+
+}
+void OverScene::Mouseup()
+{
+	m_isMouseup = true;
+
+	if (m_isMousedown)
+	{
+		sf::Vector2f mousePosF(static_cast<float>(m_mousePos.x), static_cast<float>(m_mousePos.y));
+		if (m_spritebuttonReplay.getGlobalBounds().contains(mousePosF))
+		{
+			//su kien goi lai game scene
+			m_st = GAMEPLAY;
+			is_end = true;
+			m_SoundEffect.play();
+		}
+		else if (m_spritebuttonMenu.getGlobalBounds().contains(mousePosF))
+		{
+			m_st = MENU;
+			is_end = true;
+			m_SoundEffect.play();
+
+		}
+		else if (m_spritebuttonBuy.getGlobalBounds().contains(mousePosF))
+		{
+			//su kien
+			m_st = SKIN;
+			is_end = true;
+			m_SoundEffect.play();
+
+		}
+	}
+	m_isMousedown = false;
+}
+void OverScene::Mousedown()
+{
+	m_isMousedown = true;
+	m_isMouseup = false;
+}
